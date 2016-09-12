@@ -1,11 +1,15 @@
-FROM golang
+FROM node:argon
 
-ADD . /go/src/github.com/docker/dockercloud-quickstart-go
-RUN go get gopkg.in/mgo.v2
-RUN go install github.com/docker/dockercloud-quickstart-go
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-ENV NAME world
+# Install app dependencies
+COPY package.json /usr/src/app/
+RUN npm install
 
-ENTRYPOINT /go/bin/dockercloud-quickstart-go
+# Bundle app source
+COPY . /usr/src/app
 
-EXPOSE 80
+EXPOSE 8080
+CMD [ "npm", "start" ]
